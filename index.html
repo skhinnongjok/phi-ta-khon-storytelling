@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f8f5ee">
+    <meta name="description" content="ต้นแบบ WebAR โปสการ์ดเรื่องเล่าผีตาโขน PTK-001">
+    <title>AR Story Postcards | ผีตาโขน</title>
+    <link rel="stylesheet" href="styles.css?v=5">
+    <script src="vendor/aframe-1.5.0.min.js"></script>
+    <script src="vendor/mindar-image-aframe-1.2.5.prod.js"></script>
+    <script src="ar-components.js?v=4"></script>
+    <script src="app.js?v=6" defer></script>
+  </head>
+  <body>
+    <main>
+      <section id="welcome-screen" class="welcome-screen" aria-label="เริ่มประสบการณ์ AR">
+        <p class="welcome-tagline">Living Heritage Storytelling</p>
+        <div class="welcome-title">
+          <p>AR Ta Khon Story</p>
+          <h1>ถอดรหัสหน้ากากผีตาโขน</h1>
+        </div>
+        <button id="start-ar-button" class="start-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 3H4a1 1 0 0 0-1 1v3M17 3h3a1 1 0 0 1 1 1v3M7 21H4a1 1 0 0 1-1-1v-3M17 21h3a1 1 0 0 0 1-1v-3M12 6l5 3v6l-5 3-5-3V9l5-3Zm0 0v6m5-3-5 3-5-3m5 3v6"/>
+          </svg>
+          <span>เริ่มสแกน AR</span>
+        </button>
+      </section>
+
+      <section id="experience" class="experience" aria-label="ประสบการณ์ AR Story Postcard">
+        <div id="ar-stage" class="ar-stage">
+          <a-scene
+            id="ar-scene"
+            aria-hidden="true"
+            mindar-image="imageTargetSrc: ./assets/PTK-001-assets/postcard-target.mind; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 5; warmupTolerance: 5;"
+            color-space="sRGB"
+            renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true; antialias: true;"
+            vr-mode-ui="enabled: false"
+            device-orientation-permission-ui="enabled: false"
+            embedded>
+            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+            <a-entity id="target-anchor" mindar-image-target="targetIndex: 0">
+              <a-entity id="postcard-stage" position="0 0 0" postcard-stage>
+                <a-entity id="character-wrapper" position="0 -0.08 0.025" visible="true">
+                  <a-entity
+                    id="ar-character"
+                    storyteller-sprite="src: assets/PTK-001-assets/character-idle.png; wave: assets/PTK-001-assets/2.5d-v1/character-wave.png; talk: assets/PTK-001-assets/2.5d-v1/character-talk.png; width: 0.62; height: 0.93"
+                    visible="true">
+                  </a-entity>
+                </a-entity>
+              </a-entity>
+            </a-entity>
+          </a-scene>
+
+          <div class="scan-guide" aria-hidden="true">
+            <i></i><i></i><i></i><i></i>
+          </div>
+        </div>
+
+        <button id="stop-button" class="close-button" type="button" aria-label="ปิดกล้องและกลับหน้าหลัก">×</button>
+
+        <div class="tracking-pill" role="status" aria-live="polite">
+          <span id="tracking-dot" class="tracking-dot"></span>
+          <span id="tracking-status">กำลังเปิดกล้อง</span>
+        </div>
+
+        <audio id="story-audio" preload="metadata" src="assets/PTK-001-assets/story-th.mp3"></audio>
+
+        <button id="audio-button" class="audio-button" type="button" hidden aria-label="ฟังเรื่องเล่า">
+          <span id="audio-icon" class="audio-icon" aria-hidden="true">▶</span>
+          <span id="audio-label">ฟังเรื่องเล่า</span>
+        </button>
+
+        <div id="loading-layer" class="loading-layer" aria-live="polite">
+          <span class="loader" aria-hidden="true"></span>
+        </div>
+
+        <section id="camera-error" class="error-card" hidden role="alert">
+          <h2>เปิดกล้องไม่สำเร็จ</h2>
+          <p id="camera-error-message">โปรดตรวจสอบสิทธิ์การใช้กล้อง แล้วลองอีกครั้ง</p>
+          <button id="retry-button" class="retry-button" type="button">ลองอีกครั้ง</button>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

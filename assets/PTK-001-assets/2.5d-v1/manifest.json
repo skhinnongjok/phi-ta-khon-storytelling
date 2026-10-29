@@ -1,0 +1,136 @@
+{
+  "set": "PTK-001-2.5D-assets-v1",
+  "created": "2026-10-29",
+  "generator": "Built-in image_gen",
+  "status": "Integrated with PTK-001 WebAR; browser loading and simulated target/audio lifecycle verified; physical postcard tracking after integration remains unverified",
+  "assets": [
+    {
+      "file": "stage-base.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "fully_transparent_fraction": 0.2809,
+      "alpha_over_127_bounds": [
+        28,
+        28,
+        1226,
+        1221
+      ],
+      "sha256": "00bd6bc4200171d9d3ee273651f9ff96c7d670aae2402f15211857b22c5af1d3"
+    },
+    {
+      "file": "character-shadow.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        145
+      ],
+      "fully_transparent_fraction": 0.8909,
+      "alpha_over_127_bounds": [
+        517,
+        618,
+        709,
+        661
+      ],
+      "sha256": "54c3ef623d9be64ab4428ea974d2aa708c748f03d9d9cf7daecc0fe5b3f013d7"
+    },
+    {
+      "file": "stage-backdrop.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "fully_transparent_fraction": 0.6462,
+      "alpha_over_127_bounds": [
+        3,
+        283,
+        1534,
+        845
+      ],
+      "sha256": "210769ce5adb98a1741c98badcf0da8d8e262e3d87b27c43660843e9faa340ff"
+    },
+    {
+      "file": "stage-foreground.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "fully_transparent_fraction": 0.8514,
+      "alpha_over_127_bounds": [
+        3,
+        595,
+        1533,
+        965
+      ],
+      "sha256": "58ff6e357aea626ec804531f3c3aac19aea086424f21afc3ffb1d298aca6d382"
+    },
+    {
+      "file": "character-wave.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "fully_transparent_fraction": 0.6616,
+      "alpha_over_127_bounds": [
+        121,
+        12,
+        960,
+        1516
+      ],
+      "sha256": "5ff1c0cd8493876a25bc4a2ade71cfe7ebc1baabb4294460f4315845bacfdce5",
+      "suggested_ground_pivot_normalized": [
+        0.5,
+        0.98
+      ]
+    },
+    {
+      "file": "character-talk.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "fully_transparent_fraction": 0.6541,
+      "alpha_over_127_bounds": [
+        63,
+        12,
+        991,
+        1509
+      ],
+      "sha256": "3e684c85663f00467e6f2a278bc08d224084f138b406365c9e5a2f9844f38eec",
+      "suggested_ground_pivot_normalized": [
+        0.5,
+        0.98
+      ]
+    }
+  ],
+  "reference_files": [
+    "references/character-idle.png",
+    "references/postcard-target.jpg",
+    "references/concept-mockup.png"
+  ],
+  "notes": [
+    "All new assets are separate RGBA PNG files with alpha transparency.",
+    "Base is top-down and belongs on a horizontal plane; backdrop and foreground are upright layers.",
+    "Generated character poses share a canvas size; precise pixel-perfect registration is not guaranteed. Calibrate scale and pivot before switching poses.",
+    "Foreground/backdrop have transparent canvas margins: use alpha bounds in this manifest when positioning.",
+    "Original images, audio, target and vendor files were preserved. Runtime integration is described in ../../../HANDOFF_2.5D.txt."
+  ]
+}
