@@ -10,7 +10,8 @@
     <script src="vendor/aframe-1.5.0.min.js"></script>
     <script src="vendor/mindar-image-aframe-1.2.5.prod.js"></script>
     <script src="ar-components.js?v=4"></script>
-    <script src="app.js?v=6" defer></script>
+    <script src="ptk002-components.js?v=1"></script>
+    <script src="app.js?v=7" defer></script>
   </head>
   <body>
     <main>
@@ -33,7 +34,7 @@
           <a-scene
             id="ar-scene"
             aria-hidden="true"
-            mindar-image="imageTargetSrc: ./assets/PTK-001-assets/postcard-target.mind; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 5; warmupTolerance: 5;"
+            mindar-image="imageTargetSrc: ./assets/postcard-targets.mind?v=2; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 5; warmupTolerance: 5;"
             color-space="sRGB"
             renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true; antialias: true;"
             vr-mode-ui="enabled: false"
@@ -50,6 +51,11 @@
                     visible="true">
                   </a-entity>
                 </a-entity>
+              </a-entity>
+            </a-entity>
+            <a-entity id="ptk002-anchor" mindar-image-target="targetIndex: 1">
+              <a-entity id="ptk002-stage" position="0 0 0" ptk002-forest-stage>
+                <a-entity id="ptk002-character" position="0 -0.13 0.025" ptk002-wave></a-entity>
               </a-entity>
             </a-entity>
           </a-scene>

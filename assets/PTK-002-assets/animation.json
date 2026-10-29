@@ -1,0 +1,144 @@
+{
+  "characterId": "PTK-002",
+  "type": "Frame-based complete character sprites; no rig",
+  "version": "1.0-preview",
+  "sourceMaster": "PTK-002-character-master.png",
+  "sourceMasterSHA256": "5db1d2411ad12428e039efc4b89a1f585b1948b29e27c602375d037340c14fff",
+  "frameCount": 6,
+  "animations": {
+    "wave": {
+      "sprite": "PTK-002-wave-sheet.png",
+      "imageSize": [
+        1254,
+        1254
+      ],
+      "fps": 6,
+      "sequence": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        4,
+        3,
+        2,
+        1
+      ],
+      "frames": [
+        {
+          "rect": [
+            119,
+            1,
+            243,
+            589
+          ],
+          "pivot": [
+            0.5267489711934157,
+            1
+          ],
+          "cell": [
+            0,
+            0,
+            418,
+            627
+          ]
+        },
+        {
+          "rect": [
+            501,
+            1,
+            238,
+            590
+          ],
+          "pivot": [
+            0.5357142857142857,
+            1
+          ],
+          "cell": [
+            418,
+            0,
+            418,
+            627
+          ]
+        },
+        {
+          "rect": [
+            882,
+            1,
+            271,
+            590
+          ],
+          "pivot": [
+            0.47601476014760147,
+            1
+          ],
+          "cell": [
+            836,
+            0,
+            418,
+            627
+          ]
+        },
+        {
+          "rect": [
+            116,
+            628,
+            255,
+            592
+          ],
+          "pivot": [
+            0.515686274509804,
+            1
+          ],
+          "cell": [
+            0,
+            627,
+            418,
+            627
+          ]
+        },
+        {
+          "rect": [
+            497,
+            628,
+            270,
+            592
+          ],
+          "pivot": [
+            0.48703703703703705,
+            1
+          ],
+          "cell": [
+            418,
+            627,
+            418,
+            627
+          ]
+        },
+        {
+          "rect": [
+            881,
+            627,
+            282,
+            594
+          ],
+          "pivot": [
+            0.4627659574468085,
+            1
+          ],
+          "cell": [
+            836,
+            627,
+            418,
+            627
+          ]
+        }
+      ],
+      "sha256": "e623ee03d265184c60731556bf757b2eb16bc683a81a78edd182ede2fc15647b"
+    }
+  },
+  "notes": [
+    "PTK-002 uses one automatic looping wave animation in the shared WebAR app. No pose controls or audio assigned."
+  ]
+}

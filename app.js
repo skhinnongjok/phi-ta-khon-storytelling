@@ -8,9 +8,11 @@
     audioEnded: false,
     entered: false,
     cameraPromise: null,
+    activeCard: null,
   };
 
   const elements = {};
+  const cards = [];
   const byId = (id) => document.getElementById(id);
 
   const waitForEvent = (target, eventName) => new Promise((resolve) => {
@@ -95,22 +97,26 @@
     return state.cameraPromise;
   };
 
-  const showDetectedTarget = () => {
-    elements.experience.classList.add("target-found");
-    elements.audioButton.hidden = false;
-    setTrackingStatus("เจอแล้ว", "found");
-    elements.targetAnchor.setAttribute("visible", true);
-    elements.characterWrapper.setAttribute("visible", true);
-    elements.arCharacter.setAttribute("visible", true);
-    elements.characterWrapper.object3D.scale.set(1, 1, 1);
-    elements.postcardStage.emit("stage-show", null, false);
-    elements.arCharacter.emit("idle-start", null, false);
+  const hideCard = (card) => {
+    card.anchor.setAttribute("visible", false);
+    card.stage.emit("stage-hide", null, false);
+    card.character.emit("character-hide", null, false);
   };
 
-  const hideStage = () => {
-    elements.postcardStage.emit("stage-hide", null, false);
-    elements.arCharacter.emit("character-hide", null, false);
+  const showDetectedTarget = () => {
+    const card = cards.find((item) => item.id === state.activeCard && item.found);
+    if (!card) return;
+    cards.filter((item) => item !== card).forEach(hideCard);
+    if (!card.hasAudio) elements.storyAudio.pause();
+    elements.experience.classList.add("target-found");
+    elements.audioButton.hidden = !card.hasAudio;
+    setTrackingStatus("เจอแล้ว", "found");
+    card.anchor.setAttribute("visible", true);
+    card.stage.emit("stage-show", null, false);
+    card.character.emit("idle-start", null, false);
   };
+
+  const hideStage = () => cards.forEach(hideCard);
 
   const enterExperience = async () => {
     state.entered = true;
@@ -128,6 +134,8 @@
     }
     state.arStarted = false;
     state.targetFound = false;
+    state.activeCard = null;
+    cards.forEach((card) => { card.found = false; });
     hideStage();
     elements.experience.classList.remove("target-found");
   };
@@ -146,25 +154,30 @@
     elements.welcome.hidden = false;
   };
 
-  const onTargetFound = () => {
+  const onTargetFound = (card) => {
+    card.found = true;
     state.targetFound = true;
-    if (!state.entered) {
-      elements.targetAnchor.setAttribute("visible", false);
-      return;
-    }
+    state.activeCard = card.id;
+    if (!state.entered) { hideCard(card); return; }
     showDetectedTarget();
   };
 
-  const onTargetLost = () => {
-    state.targetFound = false;
+  const onTargetLost = (card) => {
+    card.found = false;
+    hideCard(card);
+    state.targetFound = cards.some((item) => item.found);
+    // A late lost event from another target must not hide the current card.
+    if (state.activeCard !== card.id) return;
+    const remaining = cards.find((item) => item.found);
+    state.activeCard = remaining?.id || null;
+    if (remaining && state.entered) { showDetectedTarget(); return; }
     elements.experience.classList.remove("target-found");
-    elements.targetAnchor.setAttribute("visible", false);
-    hideStage();
     elements.audioButton.hidden = true;
     if (state.entered) setTrackingStatus("กำลังค้นหาโปสการ์ด");
   };
 
   const toggleStory = async () => {
+    if (state.activeCard !== "PTK-001") return;
     if (!elements.storyAudio.paused) {
       elements.storyAudio.pause();
       return;
@@ -201,14 +214,20 @@
       audioIcon: byId("audio-icon"),
       audioLabel: byId("audio-label"),
     });
+    cards.push(
+      { id: "PTK-001", anchor: elements.targetAnchor, stage: elements.postcardStage, character: elements.arCharacter, hasAudio: true, found: false },
+      { id: "PTK-002", anchor: byId("ptk002-anchor"), stage: byId("ptk002-stage"), character: byId("ptk002-character"), hasAudio: false, found: false },
+    );
   };
 
   const bindEvents = () => {
     byId("start-ar-button").addEventListener("click", enterExperience);
     byId("retry-button").addEventListener("click", prepareCamera);
     byId("stop-button").addEventListener("click", returnHome);
-    elements.targetAnchor.addEventListener("targetFound", onTargetFound);
-    elements.targetAnchor.addEventListener("targetLost", onTargetLost);
+    cards.forEach((card) => {
+      card.anchor.addEventListener("targetFound", () => onTargetFound(card));
+      card.anchor.addEventListener("targetLost", () => onTargetLost(card));
+    });
     elements.audioButton.addEventListener("click", toggleStory);
 
     elements.storyAudio.addEventListener("play", () => {
@@ -240,7 +259,7 @@
     cacheElements();
     bindEvents();
     setAudioButton("ready");
-    elements.targetAnchor.setAttribute("visible", false);
+    hideStage();
     prepareCamera();
   };
 
