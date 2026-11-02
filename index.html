@@ -4,14 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#f8f5ee">
-    <meta name="description" content="ต้นแบบ WebAR โปสการ์ดเรื่องเล่าผีตาโขน PTK-001">
+    <meta name="description" content="ต้นแบบ WebAR โปสการ์ดเรื่องเล่าผีตาโขน PTK-001 ถึง PTK-005">
     <title>AR Story Postcards | ผีตาโขน</title>
     <link rel="stylesheet" href="styles.css?v=5">
     <script src="vendor/aframe-1.5.0.min.js"></script>
     <script src="vendor/mindar-image-aframe-1.2.5.prod.js"></script>
-    <script src="ar-components.js?v=4"></script>
-    <script src="ptk002-components.js?v=1"></script>
-    <script src="app.js?v=7" defer></script>
+    <script src="ar-components.js?v=5"></script>
+    <script src="ptk002-components.js?v=3"></script>
+    <script src="ptk003-components.js?v=1"></script>
+    <script src="ptk004-components.js?v=1"></script>
+    <script src="ptk005-timeline.js?v=1"></script>
+    <script src="ptk005-components.js?v=1"></script>
+    <script src="app.js?v=12" defer></script>
   </head>
   <body>
     <main>
@@ -34,7 +38,7 @@
           <a-scene
             id="ar-scene"
             aria-hidden="true"
-            mindar-image="imageTargetSrc: ./assets/postcard-targets.mind?v=2; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 5; warmupTolerance: 5;"
+            mindar-image="imageTargetSrc: ./assets/postcard-targets.mind?v=5; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 5; warmupTolerance: 5;"
             color-space="sRGB"
             renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true; antialias: true;"
             vr-mode-ui="enabled: false"
@@ -58,6 +62,21 @@
                 <a-entity id="ptk002-character" position="0 -0.13 0.025" ptk002-wave></a-entity>
               </a-entity>
             </a-entity>
+            <a-entity id="ptk003-anchor" mindar-image-target="targetIndex: 2">
+              <a-entity id="ptk003-content">
+                <a-entity id="ptk003-character" ptk003-pair></a-entity>
+              </a-entity>
+            </a-entity>
+            <a-entity id="ptk004-anchor" mindar-image-target="targetIndex: 3">
+              <a-entity id="ptk004-content">
+                <a-entity id="ptk004-character" ptk004-components-story></a-entity>
+              </a-entity>
+            </a-entity>
+            <a-entity id="ptk005-anchor" mindar-image-target="targetIndex: 4">
+              <a-entity id="ptk005-content">
+                <a-entity id="ptk005-character" ptk005-making-story></a-entity>
+              </a-entity>
+            </a-entity>
           </a-scene>
 
           <div class="scan-guide" aria-hidden="true">
@@ -72,7 +91,7 @@
           <span id="tracking-status">กำลังเปิดกล้อง</span>
         </div>
 
-        <audio id="story-audio" preload="metadata" src="assets/PTK-001-assets/story-th.mp3"></audio>
+        <audio id="story-audio" preload="metadata" src="assets/PTK-001-assets/PTK-001-รู้จักผีตาโขน.mp3"></audio>
 
         <button id="audio-button" class="audio-button" type="button" hidden aria-label="ฟังเรื่องเล่า">
           <span id="audio-icon" class="audio-icon" aria-hidden="true">▶</span>

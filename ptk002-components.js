@@ -13,6 +13,7 @@
   AFRAME.registerComponent("ptk002-forest-stage", {
     init() {
       this.disposed = false; this.active = false; this.progress = 0; this.resources = [];
+      this.el.setAttribute("ptk002-story-inserts", "");
       this.origin = this.el.object3D.position.z;
       this.group = new THREE.Group(); this.el.setObject3D("forest-stage", this.group);
       this.show = () => { if (this.active) return; this.active = true; this.progress = reduced.matches ? 1 : 0; this.el.dataset.stageVisible = "true"; this.reveal(); };
@@ -37,6 +38,7 @@
         const mesh = s.billboard ? new THREE.Sprite(material) : new THREE.Mesh(geometry, material);
         if (s.billboard) { mesh.center.set(0.5, 0.11); mesh.scale.set(s.w, s.h, 1); }
         mesh.name = s.file; mesh.position.set(0, s.y, s.z); mesh.renderOrder = s.order;
+        if (s.file === "forest-backdrop.png") this.backdrop = mesh;
         this.group.add(mesh); this.resources.push({ texture, geometry, material });
         this.reveal(); finish();
       }, undefined, (error) => { if (this.disposed) return; failed += 1; console.warn("Optional forest layer unavailable", s.file, error); finish(); }));
@@ -45,16 +47,114 @@
     reveal() {
       const opacity = 1 - Math.pow(1 - this.progress, 3);
       this.el.object3D.position.z = this.origin - (1 - opacity) * 0.06;
-      this.el.object3D.traverse((object) => { if (object.material && !Array.isArray(object.material)) object.material.opacity = opacity; });
+      if (this.backdrop) this.backdrop.visible = !this.el.components["ptk002-story-inserts"]?.current;
+      this.el.object3D.traverse((object) => { if (object.material && !object.userData.ptk002Insert && !Array.isArray(object.material)) object.material.opacity = opacity; });
     },
     tick(time, delta) { if (!this.active) return; this.progress = reduced.matches ? 1 : Math.min(1, this.progress + delta / 850); this.reveal(); },
     remove() {
       this.disposed = true;
       this.el.removeEventListener("stage-show", this.show); this.el.removeEventListener("stage-hide", this.hide);
       this.resources.forEach(({ texture, geometry, material }) => { texture.dispose(); geometry?.dispose(); material.dispose(); });
+      this.el.removeAttribute("ptk002-story-inserts");
       this.el.removeObject3D("forest-stage");
     },
   });
+
+  // The shared audio clock is authoritative: pause, seek and replay need no timers.
+  AFRAME.registerComponent("ptk002-story-inserts", {
+    cueAt(seconds) {
+      return seconds >= 48 ? 5 : seconds >= 36 ? 2 : seconds >= 28 ? 1 : seconds >= 9 ? 3 : 0;
+    },
+    init() {
+      this.disposed = false;
+      this.active = false;
+      this.current = 0;
+      this.fade = 0;
+      this.images = new Map();
+      this.audio = document.getElementById("story-audio");
+      this.group = new THREE.Group();
+      this.group.visible = false;
+      this.el.setObject3D("ptk002-story-inserts", this.group);
+      this.show = () => { this.active = true; this.sync(0); };
+      this.hide = () => { this.active = false; this.sync(0); };
+      this.el.addEventListener("stage-show", this.show);
+      this.el.addEventListener("stage-hide", this.hide);
+      this.el.dataset.insertReady = "loading";
+      let settled = 0;
+      let failed = false;
+      const done = () => {
+        if (++settled === 4) this.el.dataset.insertReady = failed ? "partial" : "true";
+      };
+      const loader = new THREE.TextureLoader();
+      [3, 1, 2, 5].forEach((id) => {
+        loader.load(`assets/PTK-002-assets/PTK-002-insert${id}.jpg`, (texture) => {
+          if (this.disposed) { texture.dispose(); return; }
+          const source = texture.image;
+          const ratio = source.width / source.height;
+          // Cap decoded GPU textures on mobile; preserve the user's original JPEGs.
+          if (Math.max(source.width, source.height) > 1024) {
+            const canvas = document.createElement("canvas");
+            const scale = 1024 / Math.max(source.width, source.height);
+            canvas.width = Math.round(source.width * scale);
+            canvas.height = Math.round(source.height * scale);
+            canvas.getContext("2d").drawImage(source, 0, 0, canvas.width, canvas.height);
+            texture.image = canvas;
+          }
+          textureReady(texture);
+          texture.needsUpdate = true;
+          const material = new THREE.SpriteMaterial({
+            map: texture, transparent: true, opacity: 0,
+            depthTest: false, depthWrite: false, toneMapped: false,
+          });
+          const sprite = new THREE.Sprite(material);
+          sprite.userData.ptk002Insert = true;
+          sprite.name = `PTK-002-insert${id}`;
+          sprite.scale.set(Math.min(1.3, 0.86 * ratio), Math.min(0.86, 1.3 / ratio), 1);
+          sprite.position.set(0, 0.90, 0.014);
+          sprite.renderOrder = 30; // Base/shadow < photo < character (100).
+          sprite.frustumCulled = false;
+          sprite.visible = false;
+          this.group.add(sprite);
+          this.images.set(id, sprite);
+          this.sync(0);
+          done();
+        }, undefined, (error) => {
+          if (this.disposed) return;
+          failed = true;
+          done();
+          console.warn("Unable to load PTK-002 insert", id, error);
+        });
+      });
+    },
+    sync(delta) {
+      const src = this.audio?.getAttribute("src") || "";
+      const ownsAudio = src.includes("PTK-002-assets/");
+      const next = this.active && ownsAudio ? this.cueAt(this.audio.currentTime) : 0;
+      if (next !== this.current) { this.current = next; this.fade = 0; }
+      this.fade = reduced.matches ? 1 : Math.min(1, this.fade + delta / 280);
+      const progress = this.el.components["ptk002-forest-stage"]?.progress || 0;
+      const reveal = 1 - Math.pow(1 - progress, 3);
+      this.group.visible = Boolean(next);
+      const backdrop = this.el.components["ptk002-forest-stage"]?.backdrop;
+      if (backdrop) backdrop.visible = !next;
+      this.el.dataset.backdropVisible = String(this.active && !next);
+      this.images.forEach((sprite, id) => {
+        sprite.visible = id === next;
+        sprite.material.opacity = reveal * this.fade;
+      });
+      this.el.dataset.insert = String(next);
+    },
+    tick(time, delta) { this.sync(delta); },
+    remove() {
+      this.disposed = true;
+      this.el.removeEventListener("stage-show", this.show);
+      this.el.removeEventListener("stage-hide", this.hide);
+      this.images.forEach((sprite) => { sprite.material.map.dispose(); sprite.material.dispose(); });
+      this.images.clear();
+      this.el.removeObject3D("ptk002-story-inserts");
+    },
+  });
+
 
   AFRAME.registerComponent("ptk002-wave", {
     init() {

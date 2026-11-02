@@ -9,6 +9,7 @@
     entered: false,
     cameraPromise: null,
     activeCard: null,
+    audioCard: "PTK-001",
   };
 
   const elements = {};
@@ -103,11 +104,26 @@
     card.character.emit("character-hide", null, false);
   };
 
+  const audioCharacter = () => cards.find((card) => card.id === state.audioCard)?.character;
+
+  const selectAudio = (card) => {
+    const nextId = card.hasAudio ? card.id : null;
+    if (state.audioCard === nextId) return;
+    const previous = audioCharacter();
+    elements.storyAudio.pause();
+    previous?.emit("story-pause", null, false);
+    state.audioCard = nextId;
+    state.audioEnded = false;
+    elements.storyAudio.currentTime = 0;
+    setAudioButton("ready");
+    if (card.hasAudio) elements.storyAudio.src = card.audio;
+  };
+
   const showDetectedTarget = () => {
     const card = cards.find((item) => item.id === state.activeCard && item.found);
     if (!card) return;
     cards.filter((item) => item !== card).forEach(hideCard);
-    if (!card.hasAudio) elements.storyAudio.pause();
+    selectAudio(card);
     elements.experience.classList.add("target-found");
     elements.audioButton.hidden = !card.hasAudio;
     setTrackingStatus("เจอแล้ว", "found");
@@ -177,7 +193,8 @@
   };
 
   const toggleStory = async () => {
-    if (state.activeCard !== "PTK-001") return;
+    const card = cards.find((item) => item.id === state.activeCard && item.found);
+    if (!card?.hasAudio || state.audioCard !== card.id) return;
     if (!elements.storyAudio.paused) {
       elements.storyAudio.pause();
       return;
@@ -191,7 +208,7 @@
     try {
       await elements.storyAudio.play();
     } catch (error) {
-      setTrackingStatus("แตะปุ่มเสียงอีกครั้ง", "error");
+      if (state.activeCard === card.id && state.audioCard === card.id) setTrackingStatus("แตะปุ่มเสียงอีกครั้ง", "error");
     }
   };
 
@@ -215,8 +232,11 @@
       audioLabel: byId("audio-label"),
     });
     cards.push(
-      { id: "PTK-001", anchor: elements.targetAnchor, stage: elements.postcardStage, character: elements.arCharacter, hasAudio: true, found: false },
-      { id: "PTK-002", anchor: byId("ptk002-anchor"), stage: byId("ptk002-stage"), character: byId("ptk002-character"), hasAudio: false, found: false },
+      { id: "PTK-001", anchor: elements.targetAnchor, stage: elements.postcardStage, character: elements.arCharacter, hasAudio: true, audio: "assets/PTK-001-assets/PTK-001-รู้จักผีตาโขน.mp3", found: false },
+      { id: "PTK-002", anchor: byId("ptk002-anchor"), stage: byId("ptk002-stage"), character: byId("ptk002-character"), hasAudio: true, audio: "assets/PTK-002-assets/PTK-002-เรื่องเล่า ความเชื่อ.mp3", found: false },
+      { id: "PTK-003", anchor: byId("ptk003-anchor"), stage: byId("ptk003-content"), character: byId("ptk003-character"), hasAudio: true, audio: "assets/PTK-003-assets/PTK-003-ผีตาโขนใหญ่.mp3", found: false },
+      { id: "PTK-004", anchor: byId("ptk004-anchor"), stage: byId("ptk004-content"), character: byId("ptk004-character"), hasAudio: true, audio: "assets/PTK-004-assets/PTK-004-องค์ประกอบหน้ากากผีตาโขน.mp3", found: false },
+      { id: "PTK-005", anchor: byId("ptk005-anchor"), stage: byId("ptk005-content"), character: byId("ptk005-character"), hasAudio: true, audio: "assets/PTK-005-assets/PTK-005-ขั้นตอนการทำหน้ากาก.mp3", found: false },
     );
   };
 
@@ -232,18 +252,20 @@
 
     elements.storyAudio.addEventListener("play", () => {
       setAudioButton("playing");
-      elements.arCharacter.emit("story-play", null, false);
+      audioCharacter()?.emit("story-play", null, false);
     });
     elements.storyAudio.addEventListener("pause", () => {
       if (!state.audioEnded) {
         setAudioButton(elements.storyAudio.currentTime > 0 ? "paused" : "ready");
       }
-      elements.arCharacter.emit("story-pause", null, false);
+      audioCharacter()?.emit("story-pause", null, false);
     });
     elements.storyAudio.addEventListener("ended", () => {
+      // A queued ended event from a replaced source must not mark the new story ended.
+      if (elements.storyAudio.ended === false) return;
       state.audioEnded = true;
       setAudioButton("ended");
-      elements.arCharacter.emit("story-pause", null, false);
+      audioCharacter()?.emit("story-pause", null, false);
     });
     elements.storyAudio.addEventListener("error", () => {
       setTrackingStatus("โหลดเสียงไม่สำเร็จ", "error");

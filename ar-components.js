@@ -23,14 +23,13 @@
       this.layers = [];
       this.group = new THREE.Group();
       this.el.setObject3D("postcard-stage", this.group);
+      this.el.setAttribute("ptk001-story-inserts", "");
       this.originZ = this.el.object3D.position.z;
       const loader = new THREE.TextureLoader();
       // MindAR's target lies in XY; +Z points out of the printed postcard.
       const specs = [
         { file: "stage-base.png", width: 0.9, height: 0.9, y: 0, z: 0.006, order: 10 },
         { file: "character-shadow.png", width: 0.68, height: 0.45, y: -0.08, z: 0.009, order: 20 },
-        { file: "stage-backdrop.png", width: 0.94, height: 0.627, y: 0.25, z: 0.012, upright: true, baseline: 0.825, order: 30 },
-        { file: "stage-foreground.png", width: 0.9, height: 0.6, y: -0.32, z: 0.014, upright: true, baseline: 0.94, order: 110 },
       ];
       this.el.dataset.stageReady = "loading";
       let settled = 0;
@@ -88,7 +87,7 @@
       const eased = 1 - Math.pow(1 - this.progress, 3);
       this.el.object3D.position.z = this.originZ - (1 - eased) * 0.07;
       this.el.object3D.traverse((object) => {
-        if (object.material && !Array.isArray(object.material)) object.material.opacity = eased;
+        if (object.material && !object.userData.ptk001Insert && !Array.isArray(object.material)) object.material.opacity = eased;
       });
     },
 
@@ -106,7 +105,100 @@
       this.layers.forEach(({ mesh, texture }) => {
         mesh.geometry.dispose(); mesh.material.dispose(); texture.dispose();
       });
+      this.el.removeAttribute("ptk001-story-inserts");
       this.el.removeObject3D("postcard-stage");
+    },
+  });
+
+
+  // The shared audio clock is authoritative: pause, seek and replay need no timers.
+  AFRAME.registerComponent("ptk001-story-inserts", {
+    cueAt(seconds) {
+      return seconds >= 51 ? 1 : seconds >= 38 ? 2 : seconds >= 28 ? 4 : seconds >= 15 ? 3 : 0;
+    },
+    init() {
+      this.disposed = false;
+      this.active = false;
+      this.current = 0;
+      this.fade = 0;
+      this.images = new Map();
+      this.audio = document.getElementById("story-audio");
+      this.group = new THREE.Group();
+      this.group.visible = false;
+      this.el.setObject3D("ptk001-story-inserts", this.group);
+      this.show = () => { this.active = true; this.sync(0); };
+      this.hide = () => { this.active = false; this.sync(0); };
+      this.el.addEventListener("stage-show", this.show);
+      this.el.addEventListener("stage-hide", this.hide);
+      this.el.dataset.insertReady = "loading";
+      let settled = 0;
+      let failed = false;
+      const done = () => {
+        if (++settled === 4) this.el.dataset.insertReady = failed ? "partial" : "true";
+      };
+      const loader = new THREE.TextureLoader();
+      [1, 2, 3, 4].forEach((id) => {
+        loader.load(`assets/PTK-001-assets/PTK-001-insert${id}.jpg`, (texture) => {
+          if (this.disposed) { texture.dispose(); return; }
+          const source = texture.image;
+          const ratio = source.width / source.height;
+          // Cap decoded GPU textures on mobile; preserve the user's original JPEGs.
+          if (Math.max(source.width, source.height) > 1024) {
+            const canvas = document.createElement("canvas");
+            const scale = 1024 / Math.max(source.width, source.height);
+            canvas.width = Math.round(source.width * scale);
+            canvas.height = Math.round(source.height * scale);
+            canvas.getContext("2d").drawImage(source, 0, 0, canvas.width, canvas.height);
+            texture.image = canvas;
+          }
+          prepareTexture(texture);
+          const material = new THREE.SpriteMaterial({
+            map: texture, transparent: true, opacity: 0,
+            depthTest: false, depthWrite: false, toneMapped: false,
+          });
+          const sprite = new THREE.Sprite(material);
+          sprite.userData.ptk001Insert = true;
+          sprite.name = `PTK-001-insert${id}`;
+          sprite.scale.set(Math.min(1.3, 0.86 * ratio), Math.min(0.86, 1.3 / ratio), 1);
+          sprite.position.set(0, 0.52, 0.014);
+          sprite.renderOrder = 30; // Base/shadow < photo < character (100).
+          sprite.frustumCulled = false;
+          sprite.visible = false;
+          this.group.add(sprite);
+          this.images.set(id, sprite);
+          this.sync(0);
+          done();
+        }, undefined, (error) => {
+          if (this.disposed) return;
+          failed = true;
+          done();
+          console.warn("Unable to load PTK-001 insert", id, error);
+        });
+      });
+    },
+    sync(delta) {
+      const src = this.audio?.getAttribute("src") || "";
+      const ownsAudio = src.includes("PTK-001-assets/");
+      const next = this.active && ownsAudio ? this.cueAt(this.audio.currentTime) : 0;
+      if (next !== this.current) { this.current = next; this.fade = 0; }
+      this.fade = reducedMotion.matches ? 1 : Math.min(1, this.fade + delta / 280);
+      const progress = this.el.components["postcard-stage"]?.progress || 0;
+      const reveal = 1 - Math.pow(1 - progress, 3);
+      this.group.visible = Boolean(next);
+      this.images.forEach((sprite, id) => {
+        sprite.visible = id === next;
+        sprite.material.opacity = reveal * this.fade;
+      });
+      this.el.dataset.insert = String(next);
+    },
+    tick(time, delta) { this.sync(delta); },
+    remove() {
+      this.disposed = true;
+      this.el.removeEventListener("stage-show", this.show);
+      this.el.removeEventListener("stage-hide", this.hide);
+      this.images.forEach((sprite) => { sprite.material.map.dispose(); sprite.material.dispose(); });
+      this.images.clear();
+      this.el.removeObject3D("ptk001-story-inserts");
     },
   });
 

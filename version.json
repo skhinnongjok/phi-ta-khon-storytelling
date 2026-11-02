@@ -1,0 +1,19 @@
+{
+  "version": "2026.11.02-3",
+  "date": "2026-11-02",
+  "timezone": "Asia/Bangkok",
+  "label": "Shared WebAR — PTK-001 to PTK-005",
+  "targetBundle": "assets/postcard-targets.mind",
+  "targetOrder": [
+    "PTK-001",
+    "PTK-002",
+    "PTK-003",
+    "PTK-004",
+    "PTK-005"
+  ],
+  "libraries": {
+    "aframe": "1.5.0",
+    "mindar": "1.2.5"
+  },
+  "statusDocument": "docs/DEVELOPMENT-STATUS.md"
+}
