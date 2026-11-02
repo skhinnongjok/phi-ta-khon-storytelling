@@ -1,0 +1,73 @@
+{
+  "id": "PTK-005",
+  "title": "กว่าจะเป็นหน้ากากผีตาโขน",
+  "cover": "runtime/PTK-005-cover.webp",
+  "audio": "PTK-005-ขั้นตอนการทำหน้ากาก.mp3",
+  "durationSeconds": 93.570562,
+  "timingStatus": "Initial approximate cues based on the supplied nine-step outline and audio duration; word-level audio alignment is not yet independently verified. Adjust starts here after listening.",
+  "steps": [
+    {
+      "number": 1,
+      "start": 6.5,
+      "title": "เลือกวัสดุ",
+      "image": "runtime/step-01.webp",
+      "source": "วิธีทำหน้ากากผีตาโขน/1.เลือกวัสดุ กาบ,ปลีมะพร้าว.png"
+    },
+    {
+      "number": 2,
+      "start": 15,
+      "title": "แช่น้ำให้อ่อนตัว",
+      "image": "runtime/step-02.webp",
+      "source": "วิธีทำหน้ากากผีตาโขน/2.แช่น้ำให้อ่อนเพื่อดัดทรง.png"
+    },
+    {
+      "number": 3,
+      "start": 22,
+      "title": "มัดทรงและตากแดด",
+      "image": "runtime/step-03.webp",
+      "source": "วิธีทำหน้ากากผีตาโขน/3.มัดและนำไปตากแดด.png"
+    },
+    {
+      "number": 4,
+      "start": 32,
+      "title": "ตัดแต่งรูปหน้า",
+      "image": "runtime/step-04.webp",
+      "source": "วิธีทำหน้ากากผีตาโขน/4.ตัดแต่งทรงหน้ากาก.png"
+    },
+    {
+      "number": 5,
+      "start": 39,
+      "title": "เจาะช่องตา",
+      "image": "runtime/step-05.webp",
+      "source": "วิธีทำหน้ากากผีตาโขน/5.เจาะตา.png"
+    },
+    {
+      "number": 6,
+      "start": 45,
+      "title": "เย็บหวดเข้ากับส่วนใบหน้า",
+      "image": "runtime/step-06.webp",
+      "source": "วิธีทำหน้ากากผีตาโขน/6.เย็บหวดนึ่งข้าวเข้ากับกาบมะพร้าว.png"
+    },
+    {
+      "number": 7,
+      "start": 56,
+      "title": "ติดจมูกและเขา",
+      "image": "runtime/step-07.webp",
+      "source": "วิธีทำหน้ากากผีตาโขน/7.ติดจมูกและเขา.png"
+    },
+    {
+      "number": 8,
+      "start": 68,
+      "title": "รองพื้น วาดลาย และลงสี",
+      "image": "runtime/step-08.webp",
+      "source": "วิธีทำหน้ากากผีตาโขน/8.ลงสีพื้นด้วยสีขาว ร่างลวดลายและลงสี.png"
+    },
+    {
+      "number": 9,
+      "start": 83,
+      "title": "เย็บผ้าคลุมไหล่",
+      "image": "runtime/step-09.webp",
+      "source": "วิธีทำหน้ากากผีตาโขน/9.เย็บติดผ้าให้ยาวคลุมไหล่.png"
+    }
+  ]
+}
