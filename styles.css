@@ -90,6 +90,15 @@ button:focus-visible {
   text-shadow: 0 3px 16px rgb(0 0 0 / 75%);
 }
 
+.welcome-logo {
+  display: block;
+  width: clamp(78px, 22vw, 112px);
+  height: auto;
+  margin: 0 auto 14px;
+  border-radius: 24%;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 22%);
+}
+
 .welcome-title p {
   margin: 0 0 7px;
   font-family: system-ui, sans-serif;
@@ -124,11 +133,25 @@ button:focus-visible {
 }
 
 .welcome-screen .start-button {
-  position: absolute;
-  bottom: max(12vh, calc(36px + env(safe-area-inset-bottom)));
-  left: 50%;
   pointer-events: auto;
+}
+
+.welcome-actions {
+  position: absolute;
+  bottom: max(8vh, calc(28px + env(safe-area-inset-bottom)));
+  left: 50%;
+  display: grid;
+  gap: 12px;
+  width: min(calc(100% - 48px), 310px);
   transform: translateX(-50%);
+}
+
+.welcome-actions .start-button {
+  width: 100%;
+}
+
+.guide-button {
+  background: rgb(255 255 255 / 82%);
 }
 
 .start-button svg {
@@ -145,10 +168,6 @@ button:focus-visible {
 .audio-button:active,
 .retry-button:active {
   transform: scale(0.97);
-}
-
-.welcome-screen .start-button:active {
-  transform: translateX(-50%) scale(0.97);
 }
 
 .experience {
@@ -258,6 +277,73 @@ body:not(.is-scanning) .scan-guide {
 .target-found .scan-guide {
   opacity: 0;
   transition: opacity 250ms ease;
+}
+
+body.is-guide .scan-guide {
+  display: none;
+}
+
+.guide-sprite-overlay {
+  position: absolute;
+  z-index: 8;
+  top: 50%;
+  left: 50%;
+  width: min(82vw, 560px);
+  max-height: 68svh;
+  height: auto;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter: drop-shadow(0 10px 18px rgb(0 0 0 / 24%));
+}
+
+.guide-controls {
+  position: absolute;
+  z-index: 13;
+  bottom: max(22px, calc(14px + env(safe-area-inset-bottom)));
+  left: 50%;
+  padding: 8px;
+  border: 1.5px solid rgb(255 255 255 / 55%);
+  border-radius: 999px;
+  background: rgb(15 15 15 / 76%);
+  color: white;
+  transform: translateX(-50%);
+  box-shadow: 0 12px 36px rgb(0 0 0 / 28%);
+  backdrop-filter: blur(12px);
+}
+
+.guide-control-row {
+  display: flex;
+  gap: 8px;
+}
+
+.guide-control-row button {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1.5px solid white;
+  border-radius: 50%;
+  background: white;
+  color: var(--ink);
+  font: 700 1.25rem system-ui, sans-serif;
+  cursor: pointer;
+}
+
+#guide-play-button {
+  font-size: 1rem;
+}
+
+#guide-skip-button {
+  background: #fff0c9;
+}
+
+#guide-skip-button svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .audio-button {

@@ -1,19 +1,30 @@
 {
-  "version": "2026.11.02-3",
-  "date": "2026-11-02",
+  "version": "2026.11.06-3",
+  "date": "2026-11-06",
   "timezone": "Asia/Bangkok",
   "label": "Shared WebAR — PTK-001 to PTK-005",
   "targetBundle": "assets/postcard-targets.mind",
   "targetOrder": [
-    "PTK-001",
-    "PTK-002",
-    "PTK-003",
-    "PTK-004",
-    "PTK-005"
+    "PTK-001-color",
+    "PTK-002-color",
+    "PTK-003-color",
+    "PTK-004-color",
+    "PTK-005-color",
+    "PTK-001-bw",
+    "PTK-002-bw",
+    "PTK-003-bw",
+    "PTK-004-bw",
+    "PTK-005-bw"
   ],
   "libraries": {
     "aframe": "1.5.0",
     "mindar": "1.2.5"
   },
-  "statusDocument": "docs/DEVELOPMENT-STATUS.md"
+  "statusDocument": "../phi-ta-khon-ar-postcards-source-archive/docs/DEVELOPMENT-STATUS.md",
+  "targetCount": 10,
+  "targetVariants": [
+    "color",
+    "bw"
+  ],
+  "targetMap": "../phi-ta-khon-ar-postcards-source-archive/data/scan-targets.json"
 }

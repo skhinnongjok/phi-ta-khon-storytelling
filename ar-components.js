@@ -160,7 +160,7 @@
           sprite.userData.ptk001Insert = true;
           sprite.name = `PTK-001-insert${id}`;
           sprite.scale.set(Math.min(1.3, 0.86 * ratio), Math.min(0.86, 1.3 / ratio), 1);
-          sprite.position.set(0, 0.52, 0.014);
+          sprite.position.set(0, 1.25, 0.014);
           sprite.renderOrder = 30; // Base/shadow < photo < character (100).
           sprite.frustumCulled = false;
           sprite.visible = false;

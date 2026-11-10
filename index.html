@@ -6,31 +6,41 @@
     <meta name="theme-color" content="#f8f5ee">
     <meta name="description" content="ต้นแบบ WebAR โปสการ์ดเรื่องเล่าผีตาโขน PTK-001 ถึง PTK-005">
     <title>AR Story Postcards | ผีตาโขน</title>
-    <link rel="stylesheet" href="styles.css?v=5">
+    <link rel="stylesheet" href="styles.css?v=9">
     <script src="vendor/aframe-1.5.0.min.js"></script>
     <script src="vendor/mindar-image-aframe-1.2.5.prod.js"></script>
-    <script src="ar-components.js?v=5"></script>
+    <script src="ar-components.js?v=6"></script>
     <script src="ptk002-components.js?v=3"></script>
     <script src="ptk003-components.js?v=1"></script>
     <script src="ptk004-components.js?v=1"></script>
-    <script src="ptk005-timeline.js?v=1"></script>
-    <script src="ptk005-components.js?v=1"></script>
-    <script src="app.js?v=12" defer></script>
+    <script src="ptk005-timeline.js?v=2"></script>
+    <script src="ptk005-components.js?v=2"></script>
+    <script src="ar-guide-component.js?v=4"></script>
+    <script src="app.js?v=16" defer></script>
   </head>
   <body>
     <main>
       <section id="welcome-screen" class="welcome-screen" aria-label="เริ่มประสบการณ์ AR">
         <p class="welcome-tagline">Living Heritage Storytelling</p>
         <div class="welcome-title">
+          <img class="welcome-logo" src="assets/ar-ta-khon-logo.webp" alt="โลโก้ AR Ta Khon">
           <p>AR Ta Khon Story</p>
           <h1>ถอดรหัสหน้ากากผีตาโขน</h1>
         </div>
-        <button id="start-ar-button" class="start-button" type="button">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M7 3H4a1 1 0 0 0-1 1v3M17 3h3a1 1 0 0 1 1 1v3M7 21H4a1 1 0 0 1-1-1v-3M17 21h3a1 1 0 0 0 1-1v-3M12 6l5 3v6l-5 3-5-3V9l5-3Zm0 0v6m5-3-5 3-5-3m5 3v6"/>
-          </svg>
-          <span>เริ่มสแกน AR</span>
-        </button>
+        <div class="welcome-actions">
+          <button id="start-ar-button" class="start-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3H4a1 1 0 0 0-1 1v3M17 3h3a1 1 0 0 1 1 1v3M7 21H4a1 1 0 0 1-1-1v-3M17 21h3a1 1 0 0 0 1-1v-3M12 6l5 3v6l-5 3-5-3V9l5-3Zm0 0v6m5-3-5 3-5-3m5 3v6"/>
+            </svg>
+            <span>เริ่มสแกน AR</span>
+          </button>
+          <button id="guide-button" class="start-button guide-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Zm-6 8a6 6 0 0 0 12 0M12 17v4M9 21h6M4 9v4M20 9v4M2 10v2M22 10v2"/>
+            </svg>
+            <span>ฟังคำแนะนำ</span>
+          </button>
+        </div>
       </section>
 
       <section id="experience" class="experience" aria-label="ประสบการณ์ AR Story Postcard">
@@ -38,13 +48,20 @@
           <a-scene
             id="ar-scene"
             aria-hidden="true"
-            mindar-image="imageTargetSrc: ./assets/postcard-targets.mind?v=5; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 5; warmupTolerance: 5;"
+            mindar-image="imageTargetSrc: ./assets/postcard-targets.mind?v=6; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 5; warmupTolerance: 5;"
             color-space="sRGB"
             renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true; antialias: true;"
             vr-mode-ui="enabled: false"
             device-orientation-permission-ui="enabled: false"
             embedded>
-            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+            <a-camera position="0 0 0" look-controls="enabled: false">
+              <a-entity
+                id="ar-guide"
+                position="0 -0.18 -1.25"
+                visible="false"
+                ar-guide-sprite="src: assets/แนะนำ AR Ta Khon-assets/guide-sprite-sheet-v2.png">
+              </a-entity>
+            </a-camera>
 
             <a-entity id="target-anchor" mindar-image-target="targetIndex: 0">
               <a-entity id="postcard-stage" position="0 0 0" postcard-stage>
@@ -77,6 +94,11 @@
                 <a-entity id="ptk005-character" ptk005-making-story></a-entity>
               </a-entity>
             </a-entity>
+            <a-entity id="ptk001-bw-anchor" mindar-image-target="targetIndex: 5"></a-entity>
+            <a-entity id="ptk002-bw-anchor" mindar-image-target="targetIndex: 6"></a-entity>
+            <a-entity id="ptk003-bw-anchor" mindar-image-target="targetIndex: 7"></a-entity>
+            <a-entity id="ptk004-bw-anchor" mindar-image-target="targetIndex: 8"></a-entity>
+            <a-entity id="ptk005-bw-anchor" mindar-image-target="targetIndex: 9"></a-entity>
           </a-scene>
 
           <div class="scan-guide" aria-hidden="true">
@@ -92,6 +114,19 @@
         </div>
 
         <audio id="story-audio" preload="metadata" src="assets/PTK-001-assets/PTK-001-รู้จักผีตาโขน.mp3"></audio>
+        <audio id="guide-audio" preload="metadata" src="assets/แนะนำ AR Ta Khon-assets/แนะนำ AR Ta Khon.mp3"></audio>
+
+        <section id="guide-controls" class="guide-controls" hidden aria-label="คำแนะนำการใช้งาน AR">
+          <div class="guide-control-row">
+            <button id="guide-play-button" type="button" aria-label="หยุดคำแนะนำชั่วคราว">Ⅱ</button>
+            <button id="guide-replay-button" type="button" aria-label="เล่นคำแนะนำใหม่">↻</button>
+            <button id="guide-skip-button" type="button" aria-label="จบคำแนะนำและเริ่มสแกน">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 3H4a1 1 0 0 0-1 1v3M17 3h3a1 1 0 0 1 1 1v3M7 21H4a1 1 0 0 1-1-1v-3M17 21h3a1 1 0 0 0 1-1v-3M8 8h8v8H8z"/>
+              </svg>
+            </button>
+          </div>
+        </section>
 
         <button id="audio-button" class="audio-button" type="button" hidden aria-label="ฟังเรื่องเล่า">
           <span id="audio-icon" class="audio-icon" aria-hidden="true">▶</span>
