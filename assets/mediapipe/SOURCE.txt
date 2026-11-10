@@ -1,4 +1,0 @@
-MediaPipe Face Mesh 0.4.1633559619 and Camera Utils 0.3.1675466862
-Source: https://www.npmjs.com/package/@mediapipe/face_mesh
-https://www.npmjs.com/package/@mediapipe/camera_utils
-Vendored from jsDelivr npm CDN for reliable local preview.
